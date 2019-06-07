@@ -6,6 +6,7 @@ class StackMemory(HalModule):
 	def init(self):
 
 		self.memory = {}
+		self.stm = ""
 
 
 	def receive(self, msg):
@@ -18,6 +19,8 @@ class StackMemory(HalModule):
 				self.remember(msg, args[1])
 			elif args[0] == "pop":
 				self.forget(msg)
+			elif args[0] == "repush":
+				self.remember(msg, self.stm)
 
 
 	def remember(self, msg, string):
@@ -33,6 +36,8 @@ class StackMemory(HalModule):
 	def forget(self, msg):
 		rep = self.memory.get(msg.author, None)
 		if rep and len(rep):
-			self.reply(msg, body="Recalling memory {}: {}".format(len(rep),rep.pop(-1)))
+			num = len(rep)
+			self.stm = rep.pop(-1)
+			self.reply(msg, body="Recalling memory {}: {}".format(num, self.stm))
 		else:
 			self.reply(msg, body="Alas, you have no memories")
