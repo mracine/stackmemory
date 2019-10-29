@@ -1,26 +1,23 @@
-from halibot import HalModule
+from halibot import CommandModule
 
 
-class StackMemory(HalModule):
+class StackMemory(CommandModule):
 
 	def init(self):
+		self.commands = { "mem": self.receive_ }
 
 		self.memory = {}
 		self.stm = ""
 
 
-	def receive(self, msg):
-		ls = msg.body.split(" ",1)
-		cmd = ls[0]
-		args = ls[1] if len(ls) == 2 else ""
-		if cmd == "!mem":
-			args = args.split(" ",1)
-			if args[0] == "push":
-				self.remember(msg, args[1])
-			elif args[0] == "pop":
-				self.forget(msg)
-			elif args[0] == "repush":
-				self.remember(msg, self.stm)
+	def receive_(self, string, msg=None): 
+		args = string.split(" ",1)
+		if args[0] == "push":
+			self.remember(msg, args[1])
+		elif args[0] == "pop":
+			self.forget(msg)
+		elif args[0] == "repush":
+			self.remember(msg, self.stm)
 
 
 	def remember(self, msg, string):
